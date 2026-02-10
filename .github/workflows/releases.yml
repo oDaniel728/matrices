@@ -1,0 +1,32 @@
+name: auto-release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    if: startsWith(github.event.head_commit.message, 'rv')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: pegar mensagem do commit
+        id: commit
+        run: |
+          MSG="${{ github.event.head_commit.message }}"
+          echo "msg=$MSG" >> $GITHUB_OUTPUT
+          echo "tag=$MSG" >> $GITHUB_OUTPUT
+
+      - name: criar release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.commit.outputs.tag }}
+          name: ${{ steps.commit.outputs.tag }}
+          body_path: changelog.md
+          files: |
+            matrices.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
