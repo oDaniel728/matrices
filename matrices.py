@@ -52,8 +52,8 @@ class Matrix:
         })
 
     def __repr__(self) -> str:
-        l, c = self.dimentions
-        return f"Matrix {l}x{c}"
+        l, c = self.dimentions.values()
+        return f"{'\n'.join([str(i) for i in self])}"
     
     def __iter__(self):
         return iter(self.__list__())
